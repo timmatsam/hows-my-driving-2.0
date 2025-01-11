@@ -1,5 +1,3 @@
-import { env } from "@/env";
-
 export function getBaseUrl() {
   // Check if in production or preview deployment
   if (process.env.VERCEL_URL) {
@@ -7,5 +5,5 @@ export function getBaseUrl() {
   }
 
   // Local development
-  return env.APP_URL;
+  return "http://localhost:3000";
 }
