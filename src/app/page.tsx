@@ -5,6 +5,8 @@ import { type Violation } from "@/types/violations";
 export const revalidate = 604800; // invalidate every 7 days
 
 export default async function AllViolationsPage() {
+  console.log(getBaseUrl(), "getBaseUrl");
+  console.log(process.env.VERCEL_URL, "VERCEL_URL");
   const data = await fetch(`${getBaseUrl()}/api/aggregate-violations`).then(
     (res) => res.json() as Promise<{ violations: Violation[] }>,
   );
