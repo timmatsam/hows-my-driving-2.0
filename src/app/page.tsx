@@ -2,10 +2,12 @@ import { ViolationCard } from "@/components/ViolationCard";
 import { env } from "@/env";
 import { type Violation } from "@/types/violations";
 
+export const revalidate = 7 * 24 * 60 * 60; // invalidate every 7 days
+
 export default async function AllViolationsPage() {
-  const data: { violations: Violation[] } = await fetch(
-    `${env.APP_URL}/api/aggregate-violations`,
-  ).then((res) => res.json());
+  const data = await fetch(`${env.APP_URL}/api/aggregate-violations`).then(
+    (res) => res.json() as Promise<{ violations: Violation[] }>,
+  );
 
   return (
     <div className="container mx-auto px-4 py-8">
