@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { type Violation } from "@/types/violations";
+import { addCommasToNumber } from "@/utils/formatting";
 
 export function ViolationCard({ violation }: { violation: Violation }) {
   const formatDate = (dateString: string) => {
@@ -23,7 +24,7 @@ export function ViolationCard({ violation }: { violation: Violation }) {
         <div className="flex flex-col space-y-2">
           <p className="text-sm text-muted-foreground">Total Amount Owed</p>
           <p className="text-2xl font-bold">
-            ${Number(violation.total_fines).toFixed(2)}
+            ${addCommasToNumber(violation.total_fines)}
           </p>
           <p className="text-sm text-muted-foreground">Number of Violations</p>
           <p className="text-xl">{violation.total_violations}</p>
