@@ -2,7 +2,7 @@ import { ViolationCard } from "@/components/ViolationCard";
 import { getBaseUrl } from "@/utils/getBaseUrl";
 import { type Violation } from "@/types/violations";
 
-export const revalidate = 7 * 24 * 60 * 60; // invalidate every 7 days
+export const revalidate = 604800; // invalidate every 7 days
 
 export default async function AllViolationsPage() {
   const data = await fetch(`${getBaseUrl()}/api/aggregate-violations`).then(
