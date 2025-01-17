@@ -12,6 +12,7 @@ import { unstable_cacheLife as cacheLife } from "next/cache";
  */
 export const getViolations = async (): Promise<AggregateViolationByPlate[]> => {
   cacheLife("weeks");
+
   const NYC_API_BASE_URL = "https://data.cityofnewyork.us/resource";
   const DATASET_ID = "nc67-uf89";
   const startDate =
