@@ -15,9 +15,9 @@ export const getViolations = async (): Promise<AggregateViolationByPlate[]> => {
 
   const NYC_API_BASE_URL = "https://data.cityofnewyork.us/resource";
   const DATASET_ID = "nc67-uf89";
-  const startDate =
-    env.NODE_ENV === "development" ? "2024-01-01" : "2020-01-01";
-
+  // const startDate =
+  //   env.NODE_ENV === "development" ? "2024-01-01" : "2020-01-01";
+  const startDate = "2024-01-01";
   try {
     // First, get aggregated stats
     const aggregateQuery = new URLSearchParams({
