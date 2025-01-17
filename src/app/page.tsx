@@ -3,21 +3,11 @@ import { ViolationCard } from "@/components/ViolationCard";
 import { getViolations } from "@/utils/getViolations";
 import { unstable_cacheLife as cacheLife } from "next/cache";
 import Link from "next/link";
-/* eslint-disable */
 
 export default async function AllViolationsPage() {
   cacheLife("weeks");
 
   const violations = await getViolations();
-  // const violations = [
-  //   {
-  //     plate: "123456",
-  //     state: "NY",
-  //     total_violations: 1,
-  //     total_fines: 100,
-  //     last_violation_date: "2024-01-01",
-  //   },
-  // ];
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="mb-6 text-2xl font-bold md:text-3xl">
