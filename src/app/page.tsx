@@ -1,5 +1,5 @@
 import { ViolationCard } from "@/components/ViolationCard";
-import { getViolations } from "@/utils/serverFetches";
+import { getViolations } from "@/utils/getViolations";
 import { unstable_cacheLife as cacheLife } from "next/cache";
 
 export default async function AllViolationsPage() {
