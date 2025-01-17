@@ -8,16 +8,16 @@ import Link from "next/link";
 export default async function AllViolationsPage() {
   cacheLife("weeks");
 
-  // const violations = await getViolations();
-  const violations = [
-    {
-      plate: "123456",
-      state: "NY",
-      total_violations: 1,
-      total_fines: 100,
-      last_violation_date: "2024-01-01",
-    },
-  ];
+  const violations = await getViolations();
+  // const violations = [
+  //   {
+  //     plate: "123456",
+  //     state: "NY",
+  //     total_violations: 1,
+  //     total_fines: 100,
+  //     last_violation_date: "2024-01-01",
+  //   },
+  // ];
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="mb-6 text-2xl font-bold md:text-3xl">
@@ -30,7 +30,7 @@ export default async function AllViolationsPage() {
             key={index}
             className="no-underline"
           >
-              <ViolationCard violation={violation} className="hover:shadow-lg" />
+            <ViolationCard violation={violation} className="hover:shadow-lg" />
           </Link>
         ))}
       </div>
