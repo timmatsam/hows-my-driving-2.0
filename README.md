@@ -27,3 +27,14 @@ You can check out the [create-t3-app GitHub repository](https://github.com/t3-os
 ## How do I deploy this?
 
 Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+
+
+### Socrata API
+The Javascript SDK has not been updated in 9 years. 
+It does not support joins. 
+It automatically returns all fields as strings. 
+
+NYC Open Data Tables
+There is bad data in the Parking Violations tables.  
+- Around half the data in the 2023 table is outside of the 2023 range. 
+- It contains dates that don't make any sense whatsover, e.g. dates going forward to 2067. 

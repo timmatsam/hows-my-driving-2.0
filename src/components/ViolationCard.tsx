@@ -1,8 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { type Violation } from "@/types/violations";
-import { addCommasToNumber } from "@/utils/formatting";
+import { type AggregateViolationByPlate } from "@/types/violations";
 
-export function ViolationCard({ violation }: { violation: Violation }) {
+interface ViolationCardProps {
+  violation: Omit<AggregateViolationByPlate, "individual_violations">;
+}
+
+export function ViolationCard({ violation }: ViolationCardProps) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-GB", {
@@ -24,7 +27,7 @@ export function ViolationCard({ violation }: { violation: Violation }) {
         <div className="flex flex-col space-y-2">
           <p className="text-sm text-muted-foreground">Total Amount Owed</p>
           <p className="text-2xl font-bold">
-            ${addCommasToNumber(violation.total_fines)}
+            ${violation.total_fines.toLocaleString("en-US")}
           </p>
           <p className="text-sm text-muted-foreground">Number of Violations</p>
           <p className="text-xl">{violation.total_violations}</p>
