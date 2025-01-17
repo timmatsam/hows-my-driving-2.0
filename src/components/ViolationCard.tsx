@@ -1,11 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { type AggregateViolationByPlate } from "@/types/violations";
 
 interface ViolationCardProps {
   violation: Omit<AggregateViolationByPlate, "individual_violations">;
 }
 
-export function ViolationCard({ violation }: ViolationCardProps) {
+export function ViolationCard({
+  violation,
+  className,
+}: ViolationCardProps & { className?: string }) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-GB", {
@@ -14,9 +18,8 @@ export function ViolationCard({ violation }: ViolationCardProps) {
       year: "numeric",
     });
   };
-
   return (
-    <Card className="w-full">
+    <Card className={cn("w-full", className)}>
       <CardHeader>
         <CardTitle className="flex items-center justify-between text-lg md:text-xl">
           <span>{violation.plate}</span>

@@ -1,6 +1,7 @@
 import { ViolationCard } from "@/components/ViolationCard";
 import { getViolations } from "@/utils/getViolations";
 import { unstable_cacheLife as cacheLife } from "next/cache";
+import Link from "next/link";
 
 export default async function AllViolationsPage() {
   "use cache";
@@ -15,7 +16,13 @@ export default async function AllViolationsPage() {
       </h1>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {violations.map((violation, index) => (
-          <ViolationCard key={index} violation={violation} />
+          <Link
+            href={`/${violation.plate}/${violation.state}`}
+            key={index}
+            className="no-underline"
+          >
+            <ViolationCard violation={violation} className="hover:shadow-lg" />
+          </Link>
         ))}
       </div>
     </div>
