@@ -1,10 +1,10 @@
+"use cache";
 import { ViolationCard } from "@/components/ViolationCard";
 import { getViolations } from "@/utils/getViolations";
 import { unstable_cacheLife as cacheLife } from "next/cache";
 import Link from "next/link";
 
 export default async function AllViolationsPage() {
-  "use cache";
   cacheLife("weeks");
 
   const violations = await getViolations();
@@ -28,4 +28,3 @@ export default async function AllViolationsPage() {
     </div>
   );
 }
-
