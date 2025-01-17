@@ -1,18 +1,15 @@
-"use cache";
 import {
   type AggregateViolationByPlate,
   type ParkingViolation,
 } from "@/types/violations";
+import { unstable_cache } from "next/cache";
 import { env } from "process";
-import { unstable_cacheLife as cacheLife } from "next/cache";
 
 /**
  * Aggregates parking and camera violations fines from the NYC Open Data API, while
  * also fetching individual violations for each plate, which is associated with each aggregate record.
  */
 export const getViolations = async (): Promise<AggregateViolationByPlate[]> => {
-  cacheLife("weeks");
-
   const NYC_API_BASE_URL = "https://data.cityofnewyork.us/resource";
   const DATASET_ID = "nc67-uf89";
   const startDate =
@@ -104,3 +101,5 @@ export const getViolations = async (): Promise<AggregateViolationByPlate[]> => {
     return [];
   }
 };
+
+export const getCachedViolations = unstable_cache(getViolations);
