@@ -1,4 +1,5 @@
 import { ParkingViolationsTable } from "@/types/violations";
+import { unstable_cacheLife as cacheLife } from "next/cache";
 
 export interface PathParams {
   plate: string;
@@ -60,6 +61,9 @@ export async function buildStreetLookup({
   plate,
   state,
 }: PathParams): Promise<StreetLookup> {
+  "use cache";
+  cacheLife("weeks");
+
   const parkingViolationsIssuedFetchUrls = Object.entries(
     ParkingViolationsTable,
   ).map(([yearKey, id]) => {
