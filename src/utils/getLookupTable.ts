@@ -1,5 +1,5 @@
 import { ParkingViolationsTable } from "@/types/violations";
-import { unstable_cacheLife as cacheLife } from "next/cache";
+import { unstable_cache } from "next/cache";
 
 export interface PathParams {
   plate: string;
@@ -57,13 +57,10 @@ interface ParkingViolationResponse {
  * const streetInfo = lookup["1234567890"];  // O(1) lookup
  * console.log(streetInfo.street_name); // "MAIN STREET"
  */
-export async function buildStreetLookup({
+async function buildStreetLookup({
   plate,
   state,
 }: PathParams): Promise<StreetLookup> {
-  "use cache";
-  cacheLife("weeks");
-
   const parkingViolationsIssuedFetchUrls = Object.entries(
     ParkingViolationsTable,
   ).map(([yearKey, id]) => {
@@ -99,3 +96,5 @@ export async function buildStreetLookup({
     throw error;
   }
 }
+
+export const cachedBuildStreetLookup = unstable_cache(buildStreetLookup);

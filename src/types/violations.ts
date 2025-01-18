@@ -7,6 +7,14 @@ export interface AggregateViolationByPlate {
   individual_violations: Array<ParkingViolation>;
 }
 
+export interface ParkingAndCameraViolation {
+  plate: string;
+  state: string;
+  fine_amount: number;
+  issue_date: string;
+  summons_number: string;
+}
+
 export interface ParkingViolation {
   issue_date: string;
   fine_amount: number;
