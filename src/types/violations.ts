@@ -6,35 +6,28 @@ export interface AggregateViolationByPlate {
   last_violation_date: string;
 }
 
+// if this is updated, make sure to update the query in getViolationDetailsByPlateAndState.ts
 export interface ParkingAndCameraViolation {
   plate: string;
   state: string;
   fine_amount: number;
   issue_date: string;
   summons_number: string;
-}
-
-export interface ParkingViolation {
-  issue_date: string;
-  fine_amount: number;
-  summons_number: string;
+  violation: string;
 }
 
 export interface ParkingViolationLocation {
   street_name?: string;
   house_number?: string;
   summons_number: string;
+  intersecting_street?: string;
 }
 
-export interface ViolationsDetails {
-  plate: string;
-  state: string;
-  fine_amount: number;
-  issue_date: string;
-  summons_number: string;
-  street_name?: string;
-  house_number?: string;
-}
+export type IndividualViolationDetails = Pick<
+  ParkingAndCameraViolation,
+  "fine_amount" | "issue_date" | "summons_number" | "violation"
+> &
+  ParkingViolationLocation;
 
 export enum ParkingViolationsTable {
   YEAR_2016 = "kiv2-tbus",

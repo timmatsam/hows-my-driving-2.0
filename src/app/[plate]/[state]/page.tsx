@@ -31,11 +31,19 @@ async function ViolationContent({ params }: { params: Promise<PathParams> }) {
   });
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold">
-        Fines for {plate} in {state}: {violationDetails.length} details found
-      </h1>
-      <ViolationDetailsTable year={"2023"} details={violationDetails} />
+    <div className="px-4 sm:px-6 lg:px-8">
+      <div className="sm:flex-auto">
+        <h1 className="text-base font-semibold text-gray-900">
+          Violation Details
+        </h1>
+        <p className="mt-2 text-sm text-gray-700">
+          A list of all individual violations for plate of {plate} in {state}.
+        </p>
+        <p className="mt-2 text-sm text-gray-700">
+          {violationDetails.length} total violations have been found.
+        </p>
+      </div>
+      <ViolationDetailsTable details={violationDetails} />
     </div>
   );
 }
