@@ -1,5 +1,5 @@
 import { ViolationDetailsTable } from "@/components/ViolationDetailsTable";
-import { buildStreetLookup } from "@/utils/getLookupTable";
+import { cachedBuildStreetLookup } from "@/utils/getLookupTable";
 import { type PathParams } from "@/utils/getLookupTable";
 import { getCachedViolations } from "@/utils/getViolations";
 import { Suspense } from "react";
@@ -30,7 +30,7 @@ async function ViolationContent({ params }: { params: Promise<PathParams> }) {
     (violation) => violation.plate === plate && violation.state === state,
   );
 
-  const lookup = await buildStreetLookup({
+  const lookup = await cachedBuildStreetLookup({
     plate,
     state,
   });
