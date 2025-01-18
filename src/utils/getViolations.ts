@@ -1,25 +1,35 @@
-import {
-  type ParkingAndCameraViolation,
-  type AggregateViolationByPlate,
-  type ParkingViolation,
-} from "@/types/violations";
+import { type AggregateViolationByPlate } from "@/types/violations";
 import { unstable_cache } from "next/cache";
 import { env } from "process";
 
 /**
  * Aggregates parking and camera violations fines from the NYC Open Data API by plate and state.
  */
-const getViolations = async (): Promise<AggregateViolationByPlate[]> => {
+const getViolations = async (): Promise<Array<AggregateViolationByPlate>> => {
   const NYC_API_BASE_URL = "https://data.cityofnewyork.us/resource";
   const DATASET_ID = "nc67-uf89";
   const startDate =
-    env.NODE_ENV === "development" ? "2024-01-01" : "2020-01-01";
+    env.NODE_ENV === "development"
+      ? "2023-01-01T00:00:00.000"
+      : "2020-01-01T00:00:00.000";
+  const endDate = "2024-12-31T23:59:59.999";
+
   try {
-    // Fetch all violations with necessary fields
+    // Fetch aggregated violations using SoQL
     const query = new URLSearchParams({
-      $select: "plate, state, fine_amount, issue_date, summons_number",
-      $where: `issue_date between '${startDate}' and '2024-12-31' AND fine_amount IS NOT NULL AND fine_amount != '0'`,
-      $order: "issue_date DESC",
+      $select: `
+        plate,
+        state,
+        COUNT(*) as total_violations,
+        SUM(fine_amount) as total_fines,
+        MAX(issue_date) as last_violation_date
+      `
+        .trim()
+        .replace(/\s+/g, " "),
+      $where: `issue_date between '${startDate}' and '${endDate}' AND fine_amount IS NOT NULL AND fine_amount != '0'`,
+      $group: "plate, state",
+      $order: "total_violations DESC",
+      $limit: "1000",
       $$app_token: env.NYC_OPEN_DATA_APP_TOKEN ?? "",
     });
 
@@ -37,42 +47,17 @@ const getViolations = async (): Promise<AggregateViolationByPlate[]> => {
       );
     }
 
-    const violations = (await res.json()) as Array<ParkingAndCameraViolation>;
+    const aggregatedViolations =
+      (await res.json()) as Array<AggregateViolationByPlate>;
 
-    // Group violations by plate and state
-    const violationsByPlate = new Map<string, AggregateViolationByPlate>();
-
-    for (const violation of violations) {
-      const key = `${violation.plate}|${violation.state}`;
-      const existing = violationsByPlate.get(key);
-      const violationObj: ParkingViolation = {
-        issue_date: violation.issue_date,
-        fine_amount: Number(violation.fine_amount),
-        summons_number: violation.summons_number,
-      };
-
-      if (existing) {
-        // Update existing aggregate
-        existing.total_violations += 1;
-        existing.total_fines += Number(violation.fine_amount);
-        if (violation.issue_date > existing.last_violation_date) {
-          existing.last_violation_date = violation.issue_date;
-        }
-        existing.individual_violations.push(violationObj);
-      } else {
-        // Create new aggregate
-        violationsByPlate.set(key, {
-          plate: violation.plate,
-          state: violation.state,
-          total_violations: 1,
-          total_fines: Number(violation.fine_amount),
-          last_violation_date: violation.issue_date,
-          individual_violations: [violationObj],
-        });
-      }
-    }
-
-    return Array.from(violationsByPlate.values());
+    // Convert string numbers to actual numbers
+    return aggregatedViolations.map((violation) => ({
+      plate: violation.plate,
+      state: violation.state,
+      total_violations: Number(violation.total_violations),
+      total_fines: Number(violation.total_fines),
+      last_violation_date: violation.last_violation_date,
+    }));
   } catch (error) {
     console.error("Error fetching violations:", error);
     return [];
