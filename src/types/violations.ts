@@ -4,7 +4,6 @@ export interface AggregateViolationByPlate {
   total_violations: number;
   total_fines: number;
   last_violation_date: string;
-  individual_violations: Array<ParkingViolation>;
 }
 
 export interface ParkingAndCameraViolation {
@@ -27,7 +26,15 @@ export interface ParkingViolationLocation {
   summons_number: string;
 }
 
-// export enum ParkingViolationsIssue
+export interface ViolationsDetails {
+  plate: string;
+  state: string;
+  fine_amount: number;
+  issue_date: string;
+  summons_number: string;
+  street_name?: string;
+  house_number?: string;
+}
 
 export enum ParkingViolationsTable {
   YEAR_2016 = "kiv2-tbus",

@@ -6,14 +6,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  type ParkingViolation,
-  type ParkingViolationLocation,
-} from "@/types/violations";
+import { type ViolationsDetails } from "@/types/violations";
 
 type ViolationDetailsTableProps = {
   year: string;
-  details: Array<ParkingViolationLocation & ParkingViolation>;
+  details: Array<ViolationsDetails>;
 };
 
 export function ViolationDetailsTable({

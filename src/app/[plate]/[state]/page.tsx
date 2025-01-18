@@ -1,7 +1,6 @@
 import { ViolationDetailsTable } from "@/components/ViolationDetailsTable";
-import { cachedBuildStreetLookup } from "@/utils/getLookupTable";
-import { type PathParams } from "@/utils/getLookupTable";
-import { getCachedViolations } from "@/utils/getViolations";
+import { cachedBuildStreetLookup } from "@/utils/getViolationDetailsByPlateAndState";
+import { type PathParams } from "@/utils/getViolationDetailsByPlateAndState";
 import { Suspense } from "react";
 
 export default async function Page({
@@ -26,35 +25,17 @@ export default async function Page({
 async function ViolationContent({ params }: { params: Promise<PathParams> }) {
   const { plate, state } = await params;
 
-  const violationsMatchedByPlateAndState = (await getCachedViolations()).find(
-    (violation) => violation.plate === plate && violation.state === state,
-  );
-
-  const lookup = await cachedBuildStreetLookup({
+  const violationDetails = await cachedBuildStreetLookup({
     plate,
     state,
   });
-  const violationLocationDetails =
-    violationsMatchedByPlateAndState?.individual_violations.map((violation) => {
-      const locationDetails = lookup[violation.summons_number];
-
-      return { ...violation, ...locationDetails };
-    });
-
-  if (!violationLocationDetails)
-    return (
-      <div>
-        No violations found for plate: {plate} in {state}
-      </div>
-    );
 
   return (
     <div>
       <h1 className="text-2xl font-bold">
-        Fines for {plate} in {state}: {violationLocationDetails.length} details
-        found
+        Fines for {plate} in {state}: {violationDetails.length} details found
       </h1>
-      <ViolationDetailsTable year={"2023"} details={violationLocationDetails} />
+      <ViolationDetailsTable year={"2023"} details={violationDetails} />
     </div>
   );
 }
