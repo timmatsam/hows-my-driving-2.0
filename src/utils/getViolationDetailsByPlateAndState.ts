@@ -1,8 +1,9 @@
 import { env } from "@/env";
 import {
   type ParkingAndCameraViolation,
+  type ParkingViolationLocation,
   ParkingViolationsTable,
-  type ViolationsDetails,
+  type IndividualViolationDetails,
 } from "@/types/violations";
 import { unstable_cache } from "next/cache";
 
@@ -18,12 +19,6 @@ export type StreetLookup = Record<
     street_name: string;
   }
 >;
-
-interface ParkingViolationResponse {
-  summons_number: string;
-  house_number: string;
-  street_name: string;
-}
 
 /**
  * Builds a lookup table for street names and house numbers
@@ -61,7 +56,7 @@ interface ParkingViolationResponse {
 async function getViolationDetailsByPlateAndState({
   plate,
   state,
-}: PathParams): Promise<Array<ViolationsDetails>> {
+}: PathParams): Promise<Array<IndividualViolationDetails>> {
   const NYC_API_BASE_URL = "https://data.cityofnewyork.us/resource";
 
   const parkingViolationsIssuedFetchUrls = Object.entries(
@@ -69,9 +64,9 @@ async function getViolationDetailsByPlateAndState({
   ).map(([yearKey, id]) => {
     const yearFromKey = yearKey.slice(5, 9); // YEAR_2024 -> 2024
     const query = `
-    SELECT summons_number, house_number, street_name 
+    SELECT summons_number, house_number, street_name, intersecting_street
     WHERE plate_id = '${plate}' AND registration_state = '${state}' 
-    AND issue_date BETWEEN '${yearFromKey}-01-01T00:00:00.000' AND '${yearFromKey}-12-31T23:59:59.999'
+    AND issue_date BETWEEN '${yearFromKey}-01-01' AND '${yearFromKey}-12-31'
   `;
     return `${NYC_API_BASE_URL}/${id}.json?\$query=${encodeURIComponent(query)}`;
   });
@@ -84,7 +79,7 @@ async function getViolationDetailsByPlateAndState({
 
   try {
     const parkingAndCameraViolations = await fetch(
-      `${NYC_API_BASE_URL}/nc67-uf89.json?${generateQueryForParkingAndCameraViolationsByPlateAndState(plate, state)}`,
+      `${NYC_API_BASE_URL}/nc67-uf89.json?${generateQueryForParkingAndCameraViolationsByPlateAndState({ plate, state })}`,
     ).then(
       (response) =>
         response.json() as Promise<Array<ParkingAndCameraViolation>>,
@@ -93,7 +88,7 @@ async function getViolationDetailsByPlateAndState({
       parkingViolationsIssuedFetchUrls.map((url) =>
         fetch(url).then(
           (response) =>
-            response.json() as Promise<Array<ParkingViolationResponse>>,
+            response.json() as Promise<Array<ParkingViolationLocation>>,
         ),
       ),
     );
@@ -101,13 +96,14 @@ async function getViolationDetailsByPlateAndState({
     // Create a lookup map for location details by summons number
     const locationLookup = new Map<
       string,
-      { street_name?: string; house_number?: string }
+      Omit<ParkingViolationLocation, "summons_number">
     >();
     for (const response of responses) {
       for (const violation of response) {
         locationLookup.set(violation.summons_number, {
           street_name: violation.street_name,
           house_number: violation.house_number,
+          intersecting_street: violation.intersecting_street,
         });
       }
     }
@@ -127,23 +123,21 @@ async function getViolationDetailsByPlateAndState({
   }
 }
 
-const generateQueryForParkingAndCameraViolationsByPlateAndState = (
-  plate: string,
-  state: string,
-) => {
-  const startDate =
-    env.NODE_ENV === "development"
-      ? "2023-01-01T00:00:00.000"
-      : "2020-01-01T00:00:00.000";
-  const endDate = "2024-12-31T23:59:59.999";
-
+const generateQueryForParkingAndCameraViolationsByPlateAndState = ({
+  plate,
+  state,
+}: {
+  plate: string;
+  state: string;
+}) => {
   return new URLSearchParams({
     $select: `
       fine_amount,
       issue_date,
-      summons_number
+      summons_number, 
+      violation
     `,
-    $where: `plate = '${plate}' AND state = '${state}' AND issue_date between '${startDate}' and '${endDate}' AND fine_amount IS NOT NULL AND fine_amount != '0'`,
+    $where: `plate = '${plate}' AND state = '${state}' AND fine_amount IS NOT NULL AND fine_amount != '0'`,
     $limit: "50000",
     $$app_token: env.NYC_OPEN_DATA_APP_TOKEN ?? "",
   });

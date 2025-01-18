@@ -9,10 +9,8 @@ const getViolations = async (): Promise<Array<AggregateViolationByPlate>> => {
   const NYC_API_BASE_URL = "https://data.cityofnewyork.us/resource";
   const DATASET_ID = "nc67-uf89";
   const startDate =
-    env.NODE_ENV === "development"
-      ? "2023-01-01T00:00:00.000"
-      : "2020-01-01T00:00:00.000";
-  const endDate = "2024-12-31T23:59:59.999";
+    env.NODE_ENV === "development" ? "2023-01-01" : "2016-01-01";
+  const endDate = "2024-12-31";
 
   try {
     // Fetch aggregated violations using SoQL
@@ -26,7 +24,7 @@ const getViolations = async (): Promise<Array<AggregateViolationByPlate>> => {
       `
         .trim()
         .replace(/\s+/g, " "),
-      $where: `issue_date between '${startDate}' and '${endDate}' AND fine_amount IS NOT NULL AND fine_amount != '0'`,
+      $where: `issue_date >= '${startDate}' AND issue_date <= '${endDate}' AND fine_amount IS NOT NULL AND fine_amount != '0'`,
       $group: "plate, state",
       $order: "total_violations DESC",
       $limit: "1000",
