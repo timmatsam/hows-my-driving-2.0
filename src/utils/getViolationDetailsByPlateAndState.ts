@@ -95,7 +95,7 @@ async function getViolationDetailsByPlateAndState({
 
     // Create a lookup map for location details by summons number
     const locationLookup = new Map<
-      string,
+      Pick<ParkingViolationLocation, "summons_number">["summons_number"],
       Omit<ParkingViolationLocation, "summons_number">
     >();
     for (const response of responses) {
