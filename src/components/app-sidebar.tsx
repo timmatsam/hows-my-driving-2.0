@@ -32,11 +32,11 @@ const navMain = [
   //   url: Pages.SEARCH,
   //   icon: SearchIcon,
   // },
-  // {
-  //   title: "Request a Feature",
-  //   url: Pages.REQUEST_FEATURE,
-  //   icon: LightbulbIcon,
-  // },
+  {
+    title: "Request a Feature",
+    url: Pages.REQUEST_FEATURE,
+    icon: LightbulbIcon,
+  },
   // {
   //   title: "Charts",
   //   url: Pages.CHARTS,
