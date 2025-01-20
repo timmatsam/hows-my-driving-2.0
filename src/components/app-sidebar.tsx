@@ -23,30 +23,30 @@ import { Pages } from "@/types/pages";
 // This is sample data.
 const navMain = [
   {
-    title: "Search by Plate",
-    url: Pages.SEARCH,
-    icon: SearchIcon,
-  },
-  {
     title: "All Violations",
     url: Pages.DASHBOARD,
     icon: ScrollTextIcon,
   },
-  {
-    title: "Request a Feature",
-    url: Pages.REQUEST_FEATURE,
-    icon: LightbulbIcon,
-  },
-  {
-    title: "Charts",
-    url: Pages.CHARTS,
-    icon: BarChartIcon,
-  },
-  {
-    title: "About",
-    url: Pages.ABOUT,
-    icon: InfoIcon,
-  },
+  // {
+  //   title: "Search by Plate",
+  //   url: Pages.SEARCH,
+  //   icon: SearchIcon,
+  // },
+  // {
+  //   title: "Request a Feature",
+  //   url: Pages.REQUEST_FEATURE,
+  //   icon: LightbulbIcon,
+  // },
+  // {
+  //   title: "Charts",
+  //   url: Pages.CHARTS,
+  //   icon: BarChartIcon,
+  // },
+  // {
+  //   title: "About",
+  //   url: Pages.ABOUT,
+  //   icon: InfoIcon,
+  // },
 ];
 
 export function AppSidebar({
