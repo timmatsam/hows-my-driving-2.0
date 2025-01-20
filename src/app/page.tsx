@@ -1,25 +1,5 @@
-import { ViolationCard } from "@/components/ViolationCard";
-import { getCachedViolations } from "@/utils/getViolations";
-import Link from "next/link";
+import { redirect } from "next/navigation";
 
-export default async function AllViolationsPage() {
-  const violations = await getCachedViolations();
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="mb-6 text-2xl font-bold md:text-3xl">
-        NYC Parking and Camera Violations ({violations.length} plates)
-      </h1>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {violations.map((violation, index) => (
-          <Link
-            href={`/${violation.plate}/${violation.state}`}
-            key={index}
-            className="no-underline"
-          >
-            <ViolationCard violation={violation} className="hover:shadow-lg" />
-          </Link>
-        ))}
-      </div>
-    </div>
-  );
+export default function Home() {
+  redirect("/dashboard");
 }

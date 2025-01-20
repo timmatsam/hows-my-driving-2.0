@@ -29,7 +29,7 @@ async function ViolationContent({ params }: { params: Promise<PathParams> }) {
     plate,
     state,
   });
-
+  const violationDetailsToDisplay = violationDetails.slice(0, 500);
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex-auto">
@@ -40,10 +40,11 @@ async function ViolationContent({ params }: { params: Promise<PathParams> }) {
           A list of all individual violations for plate of {plate} in {state}.
         </p>
         <p className="mt-2 text-sm text-gray-700">
-          {violationDetails.length} total violations have been found.
+          {violationDetails.length} total violations have been found. A
+          shortened list of less than 500 violations is displayed if present.
         </p>
       </div>
-      <ViolationDetailsTable details={violationDetails} />
+      <ViolationDetailsTable details={violationDetailsToDisplay} />
     </div>
   );
 }
