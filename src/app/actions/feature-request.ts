@@ -12,8 +12,8 @@ export async function submitFeatureRequest(
   const { title, description } = featureRequestFormSchema.parse(formData);
 
   const res = await resend.emails.send({
-    from: "request-feature@updates.tim-samuel.com",
-    to: "howsmydrivingunleashed@proton.me",
+    from: env.FEATURE_REQUEST_FROM_EMAIL,
+    to: env.FEATURE_REQUEST_TO_EMAIL,
     subject: title,
     html: `<p>${description}</p>`,
   });
