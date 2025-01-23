@@ -1,16 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import type * as z from "zod";
 import { toast } from "sonner";
 import { submitFeatureRequest } from "@/app/actions/feature-request";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -18,43 +16,40 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-
-const formSchema = z.object({
-  title: z.string().min(2, {
-    message: "Title must be at least 2 characters.",
-  }),
-  description: z.string().min(10, {
-    message: "Description must be at least 10 characters.",
-  }),
-});
+import { featureRequestFormSchema } from "@/types/schema";
+import { useState } from "react";
 
 export function FeatureRequestForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [pending, setPending] = useState(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof featureRequestFormSchema>>({
+    resolver: zodResolver(featureRequestFormSchema),
     defaultValues: {
       title: "",
       description: "",
     },
+    mode: "onTouched",
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsSubmitting(true);
+  async function onSubmit(formData: z.infer<typeof featureRequestFormSchema>) {
+    setPending(true);
     try {
-      const result = await submitFeatureRequest(
-        new FormData(document.querySelector("form")!),
-      );
+      const result = await submitFeatureRequest(formData);
       if (result.success) {
-        toast.success(result.message);
+        toast.success("Feature request submitted successfully!", {
+          description: formData.title,
+        });
         form.reset();
+        setPending(false);
       } else {
+        console.error(result.message);
         toast.error("Failed to submit feature request. Please try again.");
       }
     } catch (error) {
+      console.error(error);
       toast.error("An error occurred. Please try again.");
     } finally {
-      setIsSubmitting(false);
+      setPending(false);
     }
   }
 
@@ -66,16 +61,13 @@ export function FeatureRequestForm() {
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Feature Title</FormLabel>
+              <FormLabel>Title</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Enter a concise title for your feature request"
+                  placeholder="Provide a concise title for your feature request."
                   {...field}
                 />
               </FormControl>
-              <FormDescription>
-                Provide a brief, descriptive title for your feature request.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -85,23 +77,20 @@ export function FeatureRequestForm() {
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Feature Description</FormLabel>
+              <FormLabel>Description</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Describe the feature you'd like to request"
+                  placeholder="Write a detailed description of what you're proposing."
                   className="resize-none"
                   {...field}
                 />
               </FormControl>
-              <FormDescription>
-                Provide details about the feature you&apos;re requesting.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Submitting..." : "Submit Feature Request"}
+        <Button disabled={!form.formState.isValid || pending}>
+          {pending ? "Submitting..." : "Submit Feature Request"}
         </Button>
       </form>
     </Form>

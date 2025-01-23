@@ -1,15 +1,26 @@
 "use server";
+import { featureRequestFormSchema } from "@/types/schema";
+import { env } from "@/env";
+import { Resend } from "resend";
+import { type z } from "zod";
 
-export async function submitFeatureRequest(formData: FormData) {
-  const title = formData.get("title") as string;
-  const description = formData.get("description") as string;
+const resend = new Resend(env.RESEND_API_KEY);
 
-  // Here you would typically save this data to a database
-  // For this example, we'll just log it
-  console.log("Feature Request:", { title, description });
+export async function submitFeatureRequest(
+  formData: z.infer<typeof featureRequestFormSchema>,
+) {
+  const { title, description } = featureRequestFormSchema.parse(formData);
 
-  // Simulate a delay to mimic a database operation
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  return { success: true, message: "Feature request submitted successfully!" };
+  const res = await resend.emails.send({
+    from: "request-feature@updates.tim-samuel.com",
+    to: "howsmydrivingunleashed@proton.me",
+    subject: title,
+    html: `<p>${description}</p>`,
+  });
+  if (res.error) return { success: false, message: res.error.message };
+  return {
+    success: true,
+    message: null,
+  };
 }
+
