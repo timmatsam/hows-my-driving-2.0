@@ -17,10 +17,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { featureRequestFormSchema } from "@/types/schema";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function FeatureRequestForm() {
   const [pending, setPending] = useState(false);
+  const [submitCount, setSubmitCount] = useState(0);
+  const MAX_SUBMISSIONS = 3;
+  const SUBMISSION_TIMEOUT = 3600000; // 1 hour in milliseconds
+
+  useEffect(() => {
+    const timer = setTimeout(() => setSubmitCount(0), SUBMISSION_TIMEOUT);
+    return () => clearTimeout(timer);
+  }, [submitCount]);
 
   const form = useForm<z.infer<typeof featureRequestFormSchema>>({
     resolver: zodResolver(featureRequestFormSchema),
@@ -32,6 +40,12 @@ export function FeatureRequestForm() {
   });
 
   async function onSubmit(formData: z.infer<typeof featureRequestFormSchema>) {
+    if (submitCount >= MAX_SUBMISSIONS) {
+      toast.warning("Too many submissions", {
+        description: "Please try again later",
+      });
+      return;
+    }
     setPending(true);
     try {
       const result = await submitFeatureRequest(formData);
@@ -39,6 +53,7 @@ export function FeatureRequestForm() {
         toast.success("Feature request submitted successfully!", {
           description: formData.title,
         });
+        setSubmitCount(submitCount + 1);
         form.reset();
       } else {
         console.error(result.message);
