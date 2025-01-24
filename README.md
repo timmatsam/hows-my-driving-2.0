@@ -23,3 +23,9 @@ Challenges:
 
 Each Next.js cache instance (which I believe is per page) can only store 2 MB of data at a time.
 The tables must be joined to get the fines and locations in a object but the Socrata API does not support joins. 
+
+### Environment Variables
+
+- `FEATURE_REQUEST_FROM_EMAIL` - The domain to send feature requests from. Must be verified and configured in Resend.
+- `FEATURE_REQUEST_TO_EMAIL` - The email address to send feature requests to.
+- `RESEND_API_KEY` - Obtained from Resend.
