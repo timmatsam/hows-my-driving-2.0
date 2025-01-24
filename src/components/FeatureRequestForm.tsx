@@ -40,7 +40,6 @@ export function FeatureRequestForm() {
           description: formData.title,
         });
         form.reset();
-        setPending(false);
       } else {
         console.error(result.message);
         toast.error("Failed to submit feature request. Please try again.");
