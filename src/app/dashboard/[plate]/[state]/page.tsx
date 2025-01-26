@@ -1,4 +1,6 @@
+import { IndividualViolationsAreaChart } from "@/components/IndividualViolationsAreaChart";
 import { ViolationDetailsTable } from "@/components/ViolationDetailsTable";
+import { type IndividualViolationDetails } from "@/types/violations";
 import { cachedBuildStreetLookup } from "@/utils/getViolationDetailsByPlateAndState";
 import { type PathParams } from "@/utils/getViolationDetailsByPlateAndState";
 import { Suspense } from "react";
@@ -30,21 +32,49 @@ async function ViolationContent({ params }: { params: Promise<PathParams> }) {
     state,
   });
   const violationDetailsToDisplay = violationDetails.slice(0, 500);
+
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex-auto">
         <h1 className="text-base font-semibold text-gray-900">
-          Violation Details
+          Violation Details [ {violationDetails.length} found ]
         </h1>
         <p className="mt-2 text-sm text-gray-700">
-          A list of all individual violations for plate of {plate} in {state}.
+          A list of all individual violations for plate of {plate} of state{" "}
+          {state}.
         </p>
-        <p className="mt-2 text-sm text-gray-700">
-          {violationDetails.length} total violations have been found. A
-          shortened list of less than 500 violations is displayed if present.
-        </p>
+        <IndividualViolationsAreaChart
+          data={transformDataForAreaChart(violationDetails)}
+        />
       </div>
       <ViolationDetailsTable details={violationDetailsToDisplay} />
     </div>
   );
+}
+
+function transformDataForAreaChart(violations: IndividualViolationDetails[]) {
+  // Map to store the count of violations per month
+  const violationCounts: Record<string, number> = {};
+
+  // Process each violation
+  violations.forEach((violation) => {
+    const date = new Date(violation.issue_date);
+    const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+
+    // Increment the count for the month
+    violationCounts[month] = (violationCounts[month] ?? 0) + 1;
+  });
+
+  // Convert the map to an array of { x, y } objects
+  const areaChartData = Object.entries(violationCounts).map(
+    ([month, count]) => ({
+      yearMonth: month,
+      totalViolations: count,
+    }),
+  );
+
+  // Sort by month for chronological order
+  areaChartData.sort((a, b) => (a.yearMonth < b.yearMonth ? -1 : 1));
+
+  return areaChartData;
 }

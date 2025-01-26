@@ -5,6 +5,8 @@
 import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+  staticPageGenerationTimeout: 180, // 3 minutes in seconds
+};
 
 export default config;
