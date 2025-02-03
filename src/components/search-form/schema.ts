@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const carSearchSchema = z.object({
-  state: z.string().min(2, "State is required."),
+  state: z.string().length(2, "State abbreviation is required."),
   plate: z
     .string()
     .min(1, "License plate is required.")
