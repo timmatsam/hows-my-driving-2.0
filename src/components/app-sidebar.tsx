@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { LightbulbIcon, ScrollTextIcon } from "lucide-react";
+import { LightbulbIcon, ScrollTextIcon, SearchIcon } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import {
@@ -21,11 +21,11 @@ const navMain = [
     url: Pages.DASHBOARD,
     icon: ScrollTextIcon,
   },
-  // {
-  //   title: "Search by Plate",
-  //   url: Pages.SEARCH,
-  //   icon: SearchIcon,
-  // },
+  {
+    title: "Search by Plate",
+    url: Pages.SEARCH,
+    icon: SearchIcon,
+  },
   {
     title: "Request a Feature",
     url: Pages.REQUEST_FEATURE,
