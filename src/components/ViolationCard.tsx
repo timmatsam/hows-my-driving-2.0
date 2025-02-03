@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { type AggregateViolationByPlate } from "@/types/violations";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ViolationCardProps {
   violation: Omit<AggregateViolationByPlate, "individual_violations">;
@@ -36,6 +37,29 @@ export function ViolationCard({
           <p className="text-xl">{violation.total_violations}</p>
           <p className="text-sm text-muted-foreground">Last Violation Date</p>
           <p className="text-xl">{formatDate(violation.last_violation_date)}</p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+export function ViolationCardSkeleton({ className }: { className?: string }) {
+  return (
+    <Card className={cn("w-full", className)}>
+      <CardHeader>
+        <CardTitle className="flex items-center justify-between text-lg md:text-xl">
+          <Skeleton className="h-6 w-24" />
+          <Skeleton className="h-5 w-12" />
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-col space-y-2">
+          <p className="text-sm text-muted-foreground">Total Amount Owed</p>
+          <Skeleton className="h-8 w-32" />
+          <p className="text-sm text-muted-foreground">Number of Violations</p>
+          <Skeleton className="h-7 w-16" />
+          <p className="text-sm text-muted-foreground">Last Violation Date</p>
+          <Skeleton className="h-7 w-28" />
         </div>
       </CardContent>
     </Card>
