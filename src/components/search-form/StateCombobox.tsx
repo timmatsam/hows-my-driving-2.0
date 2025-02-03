@@ -35,13 +35,13 @@ export function StateCombobox({ value, onChange }: StateComboboxProps) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between lg:w-[250px]"
+          className="w-full justify-between"
         >
           {value ? states.find((state) => state === value) : "Select state..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-screen p-0 lg:w-[250px]">
+      <PopoverContent className="w-screen p-0 md:w-full">
         <Command>
           <CommandInput placeholder="Search state..." />
           <CommandList>
