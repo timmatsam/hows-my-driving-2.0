@@ -9,8 +9,7 @@ import {
 import { useEffect, useState } from "react";
 export function ToggleThemeButton() {
   const [mounted, setMounted] = useState(false);
-  const { setTheme, systemTheme } = useTheme();
-
+      const { setTheme, theme } = useTheme();
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -21,19 +20,13 @@ export function ToggleThemeButton() {
         <SidebarMenuItem>
           {mounted ? (
             <SidebarMenuButton
-              onClick={() =>
-                setTheme(systemTheme === "dark" ? "light" : "dark")
-              }
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               tooltip={
-                systemTheme === "dark"
-                  ? "Turn on Light Mode"
-                  : "Turn on Dark Mode"
+                theme === "dark" ? "Turn on Light Mode" : "Turn on Dark Mode"
               }
             >
-              {systemTheme === "dark" ? <Sun /> : <Moon />}
-              <span>
-                Toggle {systemTheme === "dark" ? "Light" : "Dark"} Mode
-              </span>
+              {theme === "dark" ? <Sun /> : <Moon />}
+              <span>Toggle {theme === "dark" ? "Light" : "Dark"} Mode</span>
             </SidebarMenuButton>
           ) : (
             <SidebarMenuButton>
