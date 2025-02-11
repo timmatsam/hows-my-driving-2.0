@@ -13,8 +13,8 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Pages } from "@/types/pages";
+import { ToggleThemeButton } from "@/components/ToggleThemeButton";
 
-// This is sample data.
 const navMain = [
   {
     title: "All Violations",
@@ -48,9 +48,10 @@ export function AppSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={false}>
       <Sidebar collapsible="icon" {...props}>
         <SidebarContent>
+          <ToggleThemeButton />
           <NavMain items={navMain} />
         </SidebarContent>
         <SidebarRail />

@@ -18,7 +18,10 @@ export default async function AllViolationsPage() {
             key={index}
             className="no-underline"
           >
-            <ViolationCard violation={violation} className="hover:shadow-lg" />
+            <ViolationCard
+              violation={violation}
+              className="md:hover:shadow-lg md:hover:shadow-primary/20"
+            />
           </Link>
         ))}
       </div>
