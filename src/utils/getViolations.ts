@@ -26,7 +26,7 @@ const getViolations = async (): Promise<Array<AggregateViolationByPlate>> => {
         .replace(/\s+/g, " "),
       $where: `issue_date >= '${startDate}' AND issue_date <= '${endDate}' AND fine_amount IS NOT NULL AND fine_amount != '0'`,
       $group: "plate, state",
-      $order: "total_violations DESC",
+      $order: "total_fines DESC",
       $limit: "1000",
       $$app_token: env.NYC_OPEN_DATA_APP_TOKEN ?? "",
     });
