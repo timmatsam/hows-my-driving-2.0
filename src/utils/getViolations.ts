@@ -19,14 +19,15 @@ const getViolations = async (): Promise<Array<AggregateViolationByPlate>> => {
         plate,
         state,
         COUNT(*) as total_violations,
-        SUM(fine_amount) as total_fines,
+        SUM(amount_due) as total_owed,
+        SUM(payment_amount) as total_paid,
         MAX(issue_date) as last_violation_date
       `
         .trim()
         .replace(/\s+/g, " "),
       $where: `issue_date >= '${startDate}' AND issue_date <= '${endDate}' AND fine_amount IS NOT NULL AND fine_amount != '0'`,
       $group: "plate, state",
-      $order: "total_fines DESC",
+      $order: "total_owed DESC",
       $limit: "1000",
       $$app_token: env.NYC_OPEN_DATA_APP_TOKEN ?? "",
     });
@@ -53,7 +54,8 @@ const getViolations = async (): Promise<Array<AggregateViolationByPlate>> => {
       plate: violation.plate,
       state: violation.state,
       total_violations: Number(violation.total_violations),
-      total_fines: Number(violation.total_fines),
+      total_owed: Number(violation.total_owed || 0),
+      total_paid: Number(violation.total_paid || 0),
       last_violation_date: violation.last_violation_date,
     }));
   } catch (error) {

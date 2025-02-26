@@ -30,7 +30,8 @@ export async function searchCar(
   const query = new URLSearchParams({
     $select: `
         COUNT(*) as total_violations,
-        SUM(fine_amount) as total_fines,
+        SUM(amount_due) as total_owed,
+        SUM(payment_amount) as total_paid,
         MAX(issue_date) as last_violation_date
       `
       .trim()
@@ -45,7 +46,8 @@ export async function searchCar(
     );
     const data = (await response.json()) as Array<{
       total_violations: string;
-      total_fines: string;
+      total_owed: string;
+      total_paid: string;
       last_violation_date: string;
     }>;
 
@@ -60,7 +62,8 @@ export async function searchCar(
         plate,
         state,
         total_violations: Number(firstResult.total_violations),
-        total_fines: Number(firstResult.total_fines),
+        total_owed: Number(firstResult.total_owed || 0),
+        total_paid: Number(firstResult.total_paid || 0),
         last_violation_date: firstResult.last_violation_date,
       },
       error: null,
