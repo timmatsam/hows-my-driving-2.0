@@ -2,7 +2,8 @@ export interface AggregateViolationByPlate {
   plate: string;
   state: string;
   total_violations: number;
-  total_fines: number;
+  total_owed: number;
+  total_paid: number;
   last_violation_date: string;
 }
 

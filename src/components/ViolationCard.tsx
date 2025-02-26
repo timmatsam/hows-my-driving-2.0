@@ -11,14 +11,6 @@ export function ViolationCard({
   violation,
   className,
 }: ViolationCardProps & { className?: string }) {
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString(undefined, {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
   return (
     <Card className={cn("w-full", className)}>
       <CardHeader>
@@ -30,8 +22,17 @@ export function ViolationCard({
       <CardContent>
         <div className="flex flex-col space-y-2">
           <p className="text-sm text-muted-foreground">Total Amount Owed</p>
-          <p className="text-2xl font-bold">
-            ${violation.total_fines.toLocaleString("en-US")}
+          <p
+            className={cn(
+              "text-2xl font-bold",
+              getAmountOwedColorClass(violation.total_owed),
+            )}
+          >
+            ${violation.total_owed.toLocaleString("en-US")}
+          </p>
+          <p className="text-sm text-muted-foreground">Total Amount Paid</p>
+          <p className="text-xl">
+            ${violation.total_paid.toLocaleString("en-US")}
           </p>
           <p className="text-sm text-muted-foreground">Number of Violations</p>
           <p className="text-xl">{violation.total_violations}</p>
@@ -56,6 +57,8 @@ export function ViolationCardSkeleton({ className }: { className?: string }) {
         <div className="flex flex-col space-y-2">
           <p className="text-sm text-muted-foreground">Total Amount Owed</p>
           <Skeleton className="h-8 w-32" />
+          <p className="text-sm text-muted-foreground">Total Amount Paid</p>
+          <Skeleton className="h-7 w-32" />
           <p className="text-sm text-muted-foreground">Number of Violations</p>
           <Skeleton className="h-7 w-16" />
           <p className="text-sm text-muted-foreground">Last Violation Date</p>
@@ -65,3 +68,19 @@ export function ViolationCardSkeleton({ className }: { className?: string }) {
     </Card>
   );
 }
+
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString(undefined, {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+};
+
+// Determine the color based on the amount owed
+const getAmountOwedColorClass = (amountOwed: number) => {
+  if (amountOwed <= 0) return "text-green-600";
+  if (amountOwed < 350) return "text-amber-500";
+  return "text-red-600";
+};

@@ -2,6 +2,7 @@ import { ViolationCard } from "@/components/ViolationCard";
 import { Pages } from "@/types/pages";
 import { getCachedViolations } from "@/utils/getViolations";
 import Link from "next/link";
+import { TowingWarningBanner } from "@/components/TowingWarningBanner";
 
 export default async function AllViolationsPage() {
   const violations = await getCachedViolations();
@@ -11,6 +12,7 @@ export default async function AllViolationsPage() {
       <h1 className="mb-6 text-2xl font-bold md:text-3xl">
         NYC Parking and Camera Violations ({violationsSliced.length} plates)
       </h1>
+      <TowingWarningBanner className="mb-6" />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {violationsSliced.map((violation, index) => (
           <Link

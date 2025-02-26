@@ -26,6 +26,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
+import { TowingWarningBanner } from "../TowingWarningBanner";
 
 type Violation = Omit<AggregateViolationByPlate, "individual_violations">;
 
@@ -127,12 +128,17 @@ export function SearchForm() {
       </Form>
       {pending && <ViolationCardSkeleton className="md:w-1/2" />}
       {violation && !pending && (
-        <Link href={`/dashboard/${violation.plate}/${violation.state}`}>
-          <ViolationCard
-            violation={violation}
-            className="hover:shadow-lg md:w-1/2"
-          />
-        </Link>
+        <>
+          {violation.total_owed > 350 && (
+            <TowingWarningBanner className="mb-6" searchPage />
+          )}
+          <Link href={`/dashboard/${violation.plate}/${violation.state}`}>
+            <ViolationCard
+              violation={violation}
+              className="hover:shadow-lg md:w-1/2"
+            />
+          </Link>
+        </>
       )}
       {!violation && typeof violation !== "undefined" && !pending && (
         <p className="text-left text-sm text-gray-500">
