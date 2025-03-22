@@ -29,3 +29,7 @@ The tables must be joined to get the fines and locations in a object but the Soc
 - `FEATURE_REQUEST_FROM_EMAIL` - The domain to send feature requests from. Must be verified and configured in Resend.
 - `FEATURE_REQUEST_TO_EMAIL` - The email address to send feature requests to.
 - `RESEND_API_KEY` - Obtained from Resend.
+
+### NYC OpenData API
+    This API is built through the Socrata Open Data API and can be queried through SoQL.
+    Note: For some reason, these people think its cool to return all fields typed to strings.  

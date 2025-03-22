@@ -1,11 +1,19 @@
-import { type AggregateViolationByPlate } from "@/types/violations";
 import { unstable_cache } from "next/cache";
 import { env } from "process";
+
+export interface GetViolationsResponse {
+  plate: string;
+  state: string;
+  total_violations: number;
+  total_owed: number;
+  total_paid: number;
+  last_violation_date: string;
+}
 
 /**
  * Aggregates parking and camera violations fines from the NYC Open Data API by plate and state.
  */
-const getViolations = async (): Promise<Array<AggregateViolationByPlate>> => {
+const getViolations = async (): Promise<Array<GetViolationsResponse>> => {
   const NYC_API_BASE_URL = "https://data.cityofnewyork.us/resource";
   const DATASET_ID = "nc67-uf89";
   const startDate =
@@ -47,7 +55,7 @@ const getViolations = async (): Promise<Array<AggregateViolationByPlate>> => {
     }
 
     const aggregatedViolations =
-      (await res.json()) as Array<AggregateViolationByPlate>;
+      (await res.json()) as Array<GetViolationsResponse>;
 
     // Convert string numbers to actual numbers
     return aggregatedViolations.map((violation) => ({

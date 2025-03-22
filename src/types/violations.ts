@@ -1,31 +1,96 @@
-export interface AggregateViolationByPlate {
-  plate: string;
-  state: string;
-  total_violations: number;
-  total_owed: number;
-  total_paid: number;
-  last_violation_date: string;
-}
+// Base Types ---------
 
-// if this is updated, make sure to update the query in getViolationDetailsByPlateAndState.ts
-export interface ParkingAndCameraViolation {
+/**
+ * All available fields present within the "Parking Violations Issued - Fiscal Year <Year>"
+ * https://data.cityofnewyork.us/City-Government/Parking-Violations-Issued-Fiscal-Year-2024/pvqr-7yc4/about_data
+ */
+export interface ParkingViolationsIssuedTable {
+  summons_number: string;
   plate: string;
-  state: string;
-  fine_amount: number;
+  registration_state: string;
+  plate_type: string;
   issue_date: string;
-  summons_number: string;
-  violation: string;
+  violation_code: number;
+  vehicle_body_type: string;
+  vehicle_make: string;
+  issuing_agency: string;
+  street_code1: number;
+  street_code2: number;
+  street_code3: number;
+  vehicle_expiration_date: number;
+  violation_location: string;
+  violation_precinct: number;
+  issuer_precinct: number;
+  issuer_code: number;
+  issuer_command: string;
+  issuer_squad: string;
+  violation_time: string;
+  days_parking_in_effect: string;
+  from_hours_in_effect: string;
+  to_hours_in_effect: string;
+  vehicle_color: string;
+  unregistered_vehicle: string;
+  vehicle_year: number;
+  meter_number: string;
+  feet_from_curb: number;
+  violation_post_code: string;
+  violation_description: string;
+  no_standing_or_stopping_violation: string;
+  hydrant_violation: string;
+  double_parking_violation: string;
+  time_first_observed: string;
+  violation_county: string;
+  violation_in_front_of_or_opposite: string;
+  house_number: string;
+  street_name: string;
+  intersecting_street: string;
+  date_first_observed: number;
+  law_section: number;
+  sub_division: string;
+  violation_legal_code: string;
 }
 
-export interface ParkingViolationLocation {
-  street_name?: string;
-  house_number?: string;
+/**
+ * All available fields present within the "Open Parking and Camera Violations" dataset.
+ * https://data.cityofnewyork.us/City-Government/Open-Parking-and-Camera-Violations/nc67-uf89/about_data
+ */
+export interface OpenParkingAndCameraViolationsTable {
+  plate: string;
+  state: string;
+  license_type: string;
   summons_number: string;
-  intersecting_street?: string;
+  issue_date: string;
+  violation_time: string;
+  violation: string;
+  judgment_entry_date: string;
+  fine_amount: number;
+  penalty_amount: number;
+  interest_amount: number;
+  reduction_amount: number;
+  payment_amount: number;
+  amount_due: number;
+  precinct: string;
+  county: string;
+  issuing_agency: string;
+  violation_status: string;
+  summons_image: string;
 }
+
+// ------- End Base Types
+
+type WithPotentiallyUndefined<T> = {
+  [P in keyof T]: T[P] | undefined;
+};
+
+export type ParkingViolationLocation = WithPotentiallyUndefined<
+  Pick<
+    ParkingViolationsIssuedTable,
+    "street_name" | "house_number" | "summons_number" | "intersecting_street"
+  >
+>;
 
 export type IndividualViolationDetails = Pick<
-  ParkingAndCameraViolation,
+  OpenParkingAndCameraViolationsTable,
   "fine_amount" | "issue_date" | "summons_number" | "violation"
 > &
   ParkingViolationLocation;

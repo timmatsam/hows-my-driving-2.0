@@ -1,19 +1,15 @@
 "use server";
 
 import type * as z from "zod";
-import { type AggregateViolationByPlate } from "@/types/violations";
+import { type GetViolationsResponse } from "@/utils/getViolations";
 import { carSearchSchema } from "@/components/search-form/schema";
 import { env } from "process";
 
 const DATASET_ID = "nc67-uf89";
-export type Violation = Omit<
-  AggregateViolationByPlate,
-  "individual_violations"
->;
 
 export async function searchCar(
   values: z.infer<typeof carSearchSchema>,
-): Promise<{ violation: Violation | null; error: string | null }> {
+): Promise<{ violation: GetViolationsResponse | null; error: string | null }> {
   const validatedFields = carSearchSchema.safeParse({
     state: values.state,
     plate: values.plate,

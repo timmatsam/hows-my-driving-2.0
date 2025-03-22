@@ -1,10 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { type AggregateViolationByPlate } from "@/types/violations";
+import { type GetViolationsResponse } from "@/utils/getViolations";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface ViolationCardProps {
-  violation: Omit<AggregateViolationByPlate, "individual_violations">;
+  violation: GetViolationsResponse;
 }
 
 export function ViolationCard({
