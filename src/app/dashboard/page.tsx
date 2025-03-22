@@ -10,7 +10,7 @@ export default async function AllViolationsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="mb-6 text-2xl font-bold md:text-3xl">
-        NYC Parking and Camera Violations ({violationsSliced.length} plates)
+        Top {violationsSliced.length} Offending Drivers in NYC
       </h1>
       <TowingWarningBanner className="mb-6" />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
