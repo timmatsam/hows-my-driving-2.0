@@ -117,21 +117,71 @@ const formatLocation = ({
 }: Omit<ParkingViolationLocation, "summons_number">) => {
   if (!street_name) return "Location not specified";
 
-  let location = "";
+  // Clean up the street name and intersecting street
+  const cleanStreetName = street_name.replace(/\s*@\s*Un\s*$/, "");
+  const cleanIntersectingStreet = intersecting_street?.replace(/^\s*@\s*/, "");
+
+  // Create a formatted address for display
+  let displayAddress = "";
 
   // Add house number if it exists
   if (house_number) {
-    location += `${house_number} `;
+    displayAddress += `${house_number} `;
   }
 
-  // Handle street name, removing "@ Un" if present
-  const cleanStreetName = street_name.replace(/\s*@\s*Un\s*$/, "");
-  location += cleanStreetName;
+  // Add street name
+  displayAddress += cleanStreetName;
 
-  // Add intersection if it exists
-  if (intersecting_street) {
-    location += ` at ${intersecting_street}`;
+  // Add intersecting street if it exists
+  if (cleanIntersectingStreet && !house_number) {
+    displayAddress += ` & ${cleanIntersectingStreet}`;
   }
 
-  return location;
+  // Generate Google Maps link
+  const mapsLink = getGoogleMapsLink(
+    cleanStreetName,
+    house_number,
+    cleanIntersectingStreet,
+  );
+
+  // Return JSX with link
+  return (
+    <a
+      href={mapsLink}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-blue-600 hover:underline"
+      title="View on Google Maps"
+    >
+      {displayAddress}
+    </a>
+  );
 };
+
+const getGoogleMapsLink = (
+  street_name?: string,
+  house_number?: string,
+  intersecting_street?: string,
+) => {
+  if (!street_name) return "#";
+
+  let address = "";
+
+  // If we have a house number, create address with house number
+  if (house_number) {
+    address = `${house_number} ${street_name}, New York, NY`;
+  }
+  // Otherwise if we have an intersecting street, create intersection address
+  else if (intersecting_street) {
+    address = `${street_name} and ${intersecting_street}, New York, NY`;
+  }
+  // Fall back to just the street name
+  else {
+    address = `${street_name}, New York, NY`;
+  }
+
+  const encodedAddress = encodeURIComponent(address);
+  return `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+};
+
+//streetname: NB WEBSTER AVE @ E 1 intersection: at 88TH ST	

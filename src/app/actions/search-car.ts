@@ -1,19 +1,15 @@
 "use server";
 
 import type * as z from "zod";
-import { type AggregateViolationByPlate } from "@/types/violations";
+import { type GetViolationsResponse } from "@/utils/getViolations";
 import { carSearchSchema } from "@/components/search-form/schema";
 import { env } from "process";
 
 const DATASET_ID = "nc67-uf89";
-export type Violation = Omit<
-  AggregateViolationByPlate,
-  "individual_violations"
->;
 
 export async function searchCar(
   values: z.infer<typeof carSearchSchema>,
-): Promise<{ violation: Violation | null; error: string | null }> {
+): Promise<{ violation: GetViolationsResponse | null; error: string | null }> {
   const validatedFields = carSearchSchema.safeParse({
     state: values.state,
     plate: values.plate,
@@ -40,16 +36,18 @@ export async function searchCar(
     $$app_token: env.NYC_OPEN_DATA_APP_TOKEN ?? "",
   });
 
+  interface RawViolationApiResponse {
+    total_violations: string;
+    total_owed: string;
+    total_paid: string;
+    last_violation_date: string;
+  }
+
   try {
     const response = await fetch(
       `https://data.cityofnewyork.us/resource/${DATASET_ID}.json?${query}`,
     );
-    const data = (await response.json()) as Array<{
-      total_violations: string;
-      total_owed: string;
-      total_paid: string;
-      last_violation_date: string;
-    }>;
+    const data = (await response.json()) as Array<RawViolationApiResponse>;
 
     const firstResult = data[0];
     if (!firstResult || Number(firstResult.total_violations) === 0) {

@@ -1,9 +1,9 @@
 import { env } from "@/env";
 import {
-  type ParkingAndCameraViolation,
   type ParkingViolationLocation,
   ParkingViolationsTable,
   type IndividualViolationDetails,
+  type OpenParkingAndCameraViolationsTable,
 } from "@/types/violations";
 import { unstable_cache } from "next/cache";
 
@@ -18,6 +18,16 @@ export type StreetLookup = Record<
     house_number: string;
     street_name: string;
   }
+>;
+
+type ParkingAndCameraViolation = Pick<
+  OpenParkingAndCameraViolationsTable,
+  | "plate"
+  | "state"
+  | "fine_amount"
+  | "issue_date"
+  | "summons_number"
+  | "violation"
 >;
 
 /**
@@ -113,6 +123,7 @@ async function getViolationDetailsByPlateAndState({
       const locationDetails = locationLookup.get(violation.summons_number);
       return {
         ...violation,
+        intersecting_street: locationDetails?.intersecting_street,
         street_name: locationDetails?.street_name,
         house_number: locationDetails?.house_number,
       };

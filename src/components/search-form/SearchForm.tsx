@@ -21,17 +21,15 @@ import {
   ViolationCard,
   ViolationCardSkeleton,
 } from "@/components/ViolationCard";
-import { type AggregateViolationByPlate } from "@/types/violations";
+import { type GetViolationsResponse } from "@/utils/getViolations";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { TowingWarningBanner } from "../TowingWarningBanner";
 
-type Violation = Omit<AggregateViolationByPlate, "individual_violations">;
-
 export function SearchForm() {
-  const [violation, setViolation] = useState<Violation | null>();
+  const [violation, setViolation] = useState<GetViolationsResponse | null>();
   const [pending, setPending] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
