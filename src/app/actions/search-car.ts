@@ -36,16 +36,18 @@ export async function searchCar(
     $$app_token: env.NYC_OPEN_DATA_APP_TOKEN ?? "",
   });
 
+  interface RawViolationApiResponse {
+    total_violations: string;
+    total_owed: string;
+    total_paid: string;
+    last_violation_date: string;
+  }
+
   try {
     const response = await fetch(
       `https://data.cityofnewyork.us/resource/${DATASET_ID}.json?${query}`,
     );
-    const data = (await response.json()) as Array<{
-      total_violations: string;
-      total_owed: string;
-      total_paid: string;
-      last_violation_date: string;
-    }>;
+    const data = (await response.json()) as Array<RawViolationApiResponse>;
 
     const firstResult = data[0];
     if (!firstResult || Number(firstResult.total_violations) === 0) {
