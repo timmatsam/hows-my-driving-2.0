@@ -50,6 +50,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@tanstack/react-query-devtools": "^5.77.2",
     "@types/eslint": "^8.56.10",
     "@types/node": "^20.14.10",
     "@types/react": "^19.0.4",
