@@ -79,7 +79,7 @@ export function IndividualViolationsAreaChart({
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer
           config={chartConfig}
-          className="aspect-auto h-[250px] w-full"
+          className="aspect-auto h-[200px] w-full sm:h-[250px]"
         >
           <AreaChart data={data}>
             <defs>
@@ -120,7 +120,8 @@ export function IndividualViolationsAreaChart({
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              minTickGap={32}
+              minTickGap={20}
+              interval="preserveStartEnd"
               tickFormatter={(value: string) => {
                 const date = new Date(value);
                 return date.toLocaleDateString("en-US", {
