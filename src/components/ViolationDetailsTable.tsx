@@ -31,10 +31,10 @@ export function ViolationDetailsTable({ details }: ViolationDetailsTableProps) {
                 <TableHead className="sticky top-0 z-10 border-b border-border bg-muted/50 px-3 py-3.5 text-left text-sm font-semibold backdrop-blur backdrop-filter sm:table-cell">
                   Street
                 </TableHead>
-                <TableHead className="sticky top-0 z-10 hidden border-b border-border bg-muted/50 px-3 py-3.5 text-left text-sm font-semibold backdrop-blur backdrop-filter sm:table-cell">
+                <TableHead className="sticky top-0 z-10 border-b border-border bg-muted/50 px-3 py-3.5 text-left text-sm font-semibold backdrop-blur backdrop-filter">
                   Date Issued
                 </TableHead>
-                <TableHead className="sticky top-0 z-10 hidden border-b border-border bg-muted/50 px-3 py-3.5 text-left text-sm font-semibold backdrop-blur backdrop-filter sm:table-cell">
+                <TableHead className="sticky top-0 z-10 border-b border-border bg-muted/50 px-3 py-3.5 text-left text-sm font-semibold backdrop-blur backdrop-filter">
                   Type of Violation
                 </TableHead>
                 <TableHead className="sticky top-0 z-10 border-b border-border bg-muted/50 px-3 py-3.5 text-left text-sm font-semibold backdrop-blur backdrop-filter">
@@ -75,7 +75,7 @@ export function ViolationDetailsTable({ details }: ViolationDetailsTableProps) {
                       idx !== details.length - 1
                         ? "border-b border-border"
                         : "",
-                      "hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 sm:table-cell",
+                      "whitespace-nowrap px-3 py-4 text-sm text-gray-500",
                     )}
                   >
                     {new Date(detail.issue_date).toLocaleDateString()}
@@ -85,7 +85,7 @@ export function ViolationDetailsTable({ details }: ViolationDetailsTableProps) {
                       idx !== details.length - 1
                         ? "border-b border-border"
                         : "",
-                      "hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 sm:table-cell",
+                      "whitespace-nowrap px-3 py-4 text-sm text-gray-500",
                     )}
                   >
                     {formatToTitleCase(detail.violation)}
