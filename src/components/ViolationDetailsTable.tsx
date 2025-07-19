@@ -12,12 +12,71 @@ import {
   type IndividualViolationDetails,
 } from "@/types/violations";
 import { formatToTitleCase } from "@/utils/formatters";
+import { useState, useMemo } from "react";
+import { ChevronUp, ChevronDown } from "lucide-react";
 
 type ViolationDetailsTableProps = {
   details: Array<IndividualViolationDetails>;
 };
 
+type SortField = 'date' | 'amount' | 'violation' | null;
+type SortDirection = 'asc' | 'desc';
+
 export function ViolationDetailsTable({ details }: ViolationDetailsTableProps) {
+  const [sortField, setSortField] = useState<SortField>('date');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+
+  const sortedDetails = useMemo(() => {
+    if (!sortField) return details;
+
+    return [...details].sort((a, b) => {
+      let aValue: string | number;
+      let bValue: string | number;
+
+      switch (sortField) {
+        case 'date':
+          aValue = new Date(a.issue_date).getTime();
+          bValue = new Date(b.issue_date).getTime();
+          break;
+        case 'amount':
+          aValue = parseFloat(a.fine_amount) || 0;
+          bValue = parseFloat(b.fine_amount) || 0;
+          break;
+        case 'violation':
+          aValue = a.violation.toLowerCase();
+          bValue = b.violation.toLowerCase();
+          break;
+        default:
+          return 0;
+      }
+
+      if (aValue < bValue) {
+        return sortDirection === 'asc' ? -1 : 1;
+      }
+      if (aValue > bValue) {
+        return sortDirection === 'asc' ? 1 : -1;
+      }
+      return 0;
+    });
+  }, [details, sortField, sortDirection]);
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('desc');
+    }
+  };
+
+  const SortIcon = ({ field }: { field: SortField }) => {
+    if (sortField !== field) {
+      return <ChevronUp className="h-4 w-4 opacity-50" />;
+    }
+    return sortDirection === 'asc' ? 
+      <ChevronUp className="h-4 w-4" /> : 
+      <ChevronDown className="h-4 w-4" />;
+  };
   return (
     <div className="mt-8 flow-root">
       <div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
@@ -27,16 +86,34 @@ export function ViolationDetailsTable({ details }: ViolationDetailsTableProps) {
             <TableHeader>
               <TableRow>
                 <TableHead className="sticky top-0 z-10 border-b border-border bg-muted/50 py-3.5 pl-4 pr-3 text-left text-sm font-semibold backdrop-blur backdrop-filter sm:pl-6 lg:pl-8">
-                  Fine Amount
+                  <button
+                    onClick={() => handleSort('amount')}
+                    className="flex items-center gap-2 hover:text-foreground focus:outline-none"
+                  >
+                    Fine Amount
+                    <SortIcon field="amount" />
+                  </button>
                 </TableHead>
-                <TableHead className="sticky top-0 z-10 border-b border-border bg-muted/50 px-3 py-3.5 text-left text-sm font-semibold backdrop-blur backdrop-filter sm:table-cell">
+                <TableHead className="sticky top-0 z-10 border-b border-border bg-muted/50 px-3 py-3.5 text-left text-sm font-semibold backdrop-blur backdrop-filter">
                   Street
                 </TableHead>
                 <TableHead className="sticky top-0 z-10 border-b border-border bg-muted/50 px-3 py-3.5 text-left text-sm font-semibold backdrop-blur backdrop-filter">
-                  Date Issued
+                  <button
+                    onClick={() => handleSort('date')}
+                    className="flex items-center gap-2 hover:text-foreground focus:outline-none"
+                  >
+                    Date Issued
+                    <SortIcon field="date" />
+                  </button>
                 </TableHead>
                 <TableHead className="sticky top-0 z-10 border-b border-border bg-muted/50 px-3 py-3.5 text-left text-sm font-semibold backdrop-blur backdrop-filter">
-                  Type of Violation
+                  <button
+                    onClick={() => handleSort('violation')}
+                    className="flex items-center gap-2 hover:text-foreground focus:outline-none"
+                  >
+                    Type of Violation
+                    <SortIcon field="violation" />
+                  </button>
                 </TableHead>
                 <TableHead className="sticky top-0 z-10 border-b border-border bg-muted/50 px-3 py-3.5 text-left text-sm font-semibold backdrop-blur backdrop-filter">
                   Summons Number
@@ -44,11 +121,11 @@ export function ViolationDetailsTable({ details }: ViolationDetailsTableProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {details.map((detail, idx) => (
+              {sortedDetails.map((detail, idx) => (
                 <TableRow key={detail.summons_number}>
                   <TableCell
                     className={cn(
-                      idx !== details.length - 1
+                      idx !== sortedDetails.length - 1
                         ? "border-b border-border"
                         : "",
                       "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-normal text-gray-500 sm:pl-6 lg:pl-8",
@@ -58,10 +135,10 @@ export function ViolationDetailsTable({ details }: ViolationDetailsTableProps) {
                   </TableCell>
                   <TableCell
                     className={cn(
-                      idx !== details.length - 1
+                      idx !== sortedDetails.length - 1
                         ? "border-b border-border"
                         : "",
-                      "whitespace-nowrap px-3 py-4 text-sm text-gray-500 sm:table-cell",
+                      "whitespace-nowrap px-3 py-4 text-sm text-gray-500",
                       !detail.street_name && "text-opacity-30",
                     )}
                   >
@@ -73,7 +150,7 @@ export function ViolationDetailsTable({ details }: ViolationDetailsTableProps) {
                   </TableCell>
                   <TableCell
                     className={cn(
-                      idx !== details.length - 1
+                      idx !== sortedDetails.length - 1
                         ? "border-b border-border"
                         : "",
                       "whitespace-nowrap px-3 py-4 text-sm text-gray-500",
@@ -83,7 +160,7 @@ export function ViolationDetailsTable({ details }: ViolationDetailsTableProps) {
                   </TableCell>
                   <TableCell
                     className={cn(
-                      idx !== details.length - 1
+                      idx !== sortedDetails.length - 1
                         ? "border-b border-border"
                         : "",
                       "whitespace-nowrap px-3 py-4 text-sm text-gray-500",
@@ -93,7 +170,7 @@ export function ViolationDetailsTable({ details }: ViolationDetailsTableProps) {
                   </TableCell>
                   <TableCell
                     className={cn(
-                      idx !== details.length - 1
+                      idx !== sortedDetails.length - 1
                         ? "border-b border-border"
                         : "",
                       "whitespace-nowrap px-3 py-4 text-sm text-gray-500",
