@@ -23,7 +23,7 @@ export function ViolationDetailsTable({ details }: ViolationDetailsTableProps) {
       <div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
         <div className="inline-block min-w-full py-2 align-middle">
           <div className="overflow-x-auto">
-            <Table className="min-w-full border-separate border-spacing-0">
+            <Table className="border-separate border-spacing-0">
             <TableHeader>
               <TableRow>
                 <TableHead className="sticky top-0 z-10 border-b border-border bg-muted/50 py-3.5 pl-4 pr-3 text-left text-sm font-semibold backdrop-blur backdrop-filter sm:pl-6 lg:pl-8">
