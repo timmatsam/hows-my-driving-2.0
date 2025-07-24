@@ -34,20 +34,19 @@ async function ViolationContent({ params }: { params: Promise<PathParams> }) {
   const violationDetailsToDisplay = violationDetails.slice(0, 500);
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
-      <div className="sm:flex-auto">
-        <h1 className="text-base font-semibold text-primary">
+    <div className="px-2 sm:px-4 lg:px-8 max-w-3xl mx-auto w-full">
+      <div className="flex flex-col gap-4 sm:flex-auto">
+        <h1 className="text-base font-semibold text-primary mt-4 sm:mt-8">
           Violation Details [ {violationDetails.length} found ]
         </h1>
-        <p className="mt-2 text-sm text-primary/50">
-          A list of all individual violations for plate of {plate} of state{" "}
-          {state}.
+        <p className="text-sm text-primary/50">
+          A list of all individual violations for plate of {plate} of state {state}.
         </p>
         <IndividualViolationsAreaChart
           data={transformDataForAreaChart(violationDetails)}
         />
+        <ViolationDetailsTable details={violationDetailsToDisplay} />
       </div>
-      <ViolationDetailsTable details={violationDetailsToDisplay} />
     </div>
   );
 }

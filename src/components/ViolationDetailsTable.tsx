@@ -81,111 +81,89 @@ export function ViolationDetailsTable({ details }: ViolationDetailsTableProps) {
   };
   return (
     <div className="mt-8 flow-root">
-      <div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
+      {/* Desktop Table */}
+      <div className="hidden md:block -mx-4 -my-2 sm:-mx-6 lg:-mx-8">
         <div className="inline-block min-w-full py-2 align-middle">
           <div className="overflow-x-auto">
             <Table className="border-separate border-spacing-0">
-            <TableHeader>
-              <TableRow>
-                <TableHead className="sticky top-0 z-10 border-b border-border bg-muted/50 py-3.5 pl-4 pr-3 text-left text-sm font-semibold backdrop-blur backdrop-filter sm:pl-6 lg:pl-8">
-                  <button
-                    onClick={() => handleSort('amount')}
-                    className="flex items-center gap-2 hover:text-foreground focus:outline-none"
-                  >
-                    Fine Amount
-                    <SortIcon field="amount" />
-                  </button>
-                </TableHead>
-                <TableHead className="sticky top-0 z-10 border-b border-border bg-muted/50 px-3 py-3.5 text-left text-sm font-semibold backdrop-blur backdrop-filter">
-                  Street
-                </TableHead>
-                <TableHead className="sticky top-0 z-10 border-b border-border bg-muted/50 px-3 py-3.5 text-left text-sm font-semibold backdrop-blur backdrop-filter">
-                  <button
-                    onClick={() => handleSort('date')}
-                    className="flex items-center gap-2 hover:text-foreground focus:outline-none"
-                  >
-                    Date Issued
-                    <SortIcon field="date" />
-                  </button>
-                </TableHead>
-                <TableHead className="sticky top-0 z-10 border-b border-border bg-muted/50 px-3 py-3.5 text-left text-sm font-semibold backdrop-blur backdrop-filter">
-                  <button
-                    onClick={() => handleSort('violation')}
-                    className="flex items-center gap-2 hover:text-foreground focus:outline-none"
-                  >
-                    Type of Violation
-                    <SortIcon field="violation" />
-                  </button>
-                </TableHead>
-                <TableHead className="sticky top-0 z-10 border-b border-border bg-muted/50 px-3 py-3.5 text-left text-sm font-semibold backdrop-blur backdrop-filter">
-                  Summons Number
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {sortedDetails.map((detail, idx) => (
-                <TableRow key={detail.summons_number}>
-                  <TableCell
-                    className={cn(
-                      idx !== sortedDetails.length - 1
-                        ? "border-b border-border"
-                        : "",
-                      "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-normal text-gray-500 sm:pl-6 lg:pl-8",
-                    )}
-                  >
-                    ${detail.fine_amount}
-                  </TableCell>
-                  <TableCell
-                    className={cn(
-                      idx !== sortedDetails.length - 1
-                        ? "border-b border-border"
-                        : "",
-                      "whitespace-nowrap px-3 py-4 text-sm text-gray-500",
-                      !detail.street_name && "text-opacity-30",
-                    )}
-                  >
-                    {formatLocation({
-                      intersecting_street: detail.intersecting_street,
-                      house_number: detail.house_number,
-                      street_name: detail.street_name,
-                    })}
-                  </TableCell>
-                  <TableCell
-                    className={cn(
-                      idx !== sortedDetails.length - 1
-                        ? "border-b border-border"
-                        : "",
-                      "whitespace-nowrap px-3 py-4 text-sm text-gray-500",
-                    )}
-                  >
-                    {new Date(detail.issue_date).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell
-                    className={cn(
-                      idx !== sortedDetails.length - 1
-                        ? "border-b border-border"
-                        : "",
-                      "whitespace-nowrap px-3 py-4 text-sm text-gray-500",
-                    )}
-                  >
-                    {formatToTitleCase(detail.violation)}
-                  </TableCell>
-                  <TableCell
-                    className={cn(
-                      idx !== sortedDetails.length - 1
-                        ? "border-b border-border"
-                        : "",
-                      "whitespace-nowrap px-3 py-4 text-sm text-gray-500",
-                    )}
-                  >
-                    {detail.summons_number}
-                  </TableCell>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="sticky top-0 z-10 border-b border-border bg-muted/50 py-3.5 pl-4 pr-3 text-left text-sm font-semibold backdrop-blur backdrop-filter sm:pl-6 lg:pl-8">
+                    <button
+                      onClick={() => handleSort('amount')}
+                      className="flex items-center gap-2 hover:text-foreground focus:outline-none"
+                    >
+                      Fine Amount
+                      <SortIcon field="amount" />
+                    </button>
+                  </TableHead>
+                  <TableHead className="sticky top-0 z-10 border-b border-border bg-muted/50 px-3 py-3.5 text-left text-sm font-semibold backdrop-blur backdrop-filter">
+                    Street
+                  </TableHead>
+                  <TableHead className="sticky top-0 z-10 border-b border-border bg-muted/50 px-3 py-3.5 text-left text-sm font-semibold backdrop-blur backdrop-filter">
+                    <button
+                      onClick={() => handleSort('date')}
+                      className="flex items-center gap-2 hover:text-foreground focus:outline-none"
+                    >
+                      Date Issued
+                      <SortIcon field="date" />
+                    </button>
+                  </TableHead>
+                  <TableHead className="sticky top-0 z-10 border-b border-border bg-muted/50 px-3 py-3.5 text-left text-sm font-semibold backdrop-blur backdrop-filter">
+                    <button
+                      onClick={() => handleSort('violation')}
+                      className="flex items-center gap-2 hover:text-foreground focus:outline-none"
+                    >
+                      Type of Violation
+                      <SortIcon field="violation" />
+                    </button>
+                  </TableHead>
+                  <TableHead className="sticky top-0 z-10 border-b border-border bg-muted/50 px-3 py-3.5 text-left text-sm font-semibold backdrop-blur backdrop-filter">
+                    Summons Number
+                  </TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {sortedDetails.map((detail, idx) => (
+                  <TableRow key={detail.summons_number}>
+                    <TableCell className={cn(idx !== sortedDetails.length - 1 ? "border-b border-border" : "", "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-normal text-gray-500 sm:pl-6 lg:pl-8")}>${detail.fine_amount}</TableCell>
+                    <TableCell className={cn(idx !== sortedDetails.length - 1 ? "border-b border-border" : "", "whitespace-nowrap px-3 py-4 text-sm text-gray-500", !detail.street_name && "text-opacity-30")}>{formatLocation({ intersecting_street: detail.intersecting_street, house_number: detail.house_number, street_name: detail.street_name })}</TableCell>
+                    <TableCell className={cn(idx !== sortedDetails.length - 1 ? "border-b border-border" : "", "whitespace-nowrap px-3 py-4 text-sm text-gray-500")}>{new Date(detail.issue_date).toLocaleDateString()}</TableCell>
+                    <TableCell className={cn(idx !== sortedDetails.length - 1 ? "border-b border-border" : "", "whitespace-nowrap px-3 py-4 text-sm text-gray-500")}>{formatToTitleCase(detail.violation)}</TableCell>
+                    <TableCell className={cn(idx !== sortedDetails.length - 1 ? "border-b border-border" : "", "whitespace-nowrap px-3 py-4 text-sm text-gray-500")}>{detail.summons_number}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
         </div>
+      </div>
+      {/* Mobile Cards */}
+      <div className="md:hidden space-y-4">
+        {sortedDetails.map((detail) => (
+          <div key={detail.summons_number} className="rounded-lg border border-border bg-card p-4 shadow-sm flex flex-col gap-2">
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-semibold text-muted-foreground">Fine Amount</span>
+              <span className="text-sm font-bold text-primary">${detail.fine_amount}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-semibold text-muted-foreground">Street</span>
+              <span className="text-sm text-primary">{formatLocation({ intersecting_street: detail.intersecting_street, house_number: detail.house_number, street_name: detail.street_name })}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-semibold text-muted-foreground">Date Issued</span>
+              <span className="text-sm text-primary">{new Date(detail.issue_date).toLocaleDateString()}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-semibold text-muted-foreground">Type of Violation</span>
+              <span className="text-sm text-primary">{formatToTitleCase(detail.violation)}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-semibold text-muted-foreground">Summons Number</span>
+              <span className="text-sm text-primary">{detail.summons_number}</span>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
