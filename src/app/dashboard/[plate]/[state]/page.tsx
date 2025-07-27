@@ -31,8 +31,6 @@ async function ViolationContent({ params }: { params: Promise<PathParams> }) {
     plate,
     state,
   });
-  const violationDetailsToDisplay = violationDetails.slice(0, 500);
-
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex-auto">
@@ -47,7 +45,7 @@ async function ViolationContent({ params }: { params: Promise<PathParams> }) {
           data={transformDataForAreaChart(violationDetails)}
         />
       </div>
-      <ViolationDetailsTable details={violationDetailsToDisplay} />
+      <ViolationDetailsTable details={violationDetails} />
     </div>
   );
 }

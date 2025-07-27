@@ -14,7 +14,7 @@ import {
   type IndividualViolationDetails,
 } from "@/types/violations";
 import { formatToTitleCase } from "@/utils/formatters";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { ChevronUp, ChevronDown } from "lucide-react";
 
 type ViolationDetailsTableProps = {
@@ -27,6 +27,8 @@ type SortDirection = 'asc' | 'desc';
 export function ViolationDetailsTable({ details }: ViolationDetailsTableProps) {
   const [sortField, setSortField] = useState<SortField>('date');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  const [displayCount, setDisplayCount] = useState(50);
+  const observerRef = useRef<HTMLDivElement>(null);
 
   const sortedDetails = useMemo(() => {
     if (!sortField) return details;
@@ -61,6 +63,31 @@ export function ViolationDetailsTable({ details }: ViolationDetailsTableProps) {
       return 0;
     });
   }, [details, sortField, sortDirection]);
+
+  const displayedDetails = useMemo(() => {
+    return sortedDetails.slice(0, displayCount);
+  }, [sortedDetails, displayCount]);
+
+  const loadMore = useCallback(() => {
+    setDisplayCount(prev => Math.min(prev + 50, sortedDetails.length));
+  }, [sortedDetails.length]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting && displayCount < sortedDetails.length) {
+          loadMore();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (observerRef.current) {
+      observer.observe(observerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [loadMore, displayCount, sortedDetails.length]);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -124,15 +151,22 @@ export function ViolationDetailsTable({ details }: ViolationDetailsTableProps) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sortedDetails.map((detail, idx) => (
+                {displayedDetails.map((detail, idx) => (
                   <TableRow key={detail.summons_number}>
-                    <TableCell className={cn(idx !== sortedDetails.length - 1 ? "border-b border-border" : "", "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-normal text-gray-500 sm:pl-6 lg:pl-8")}>${detail.fine_amount}</TableCell>
-                    <TableCell className={cn(idx !== sortedDetails.length - 1 ? "border-b border-border" : "", "whitespace-nowrap px-3 py-4 text-sm text-gray-500", !detail.street_name && "text-opacity-30")}>{formatLocation({ intersecting_street: detail.intersecting_street, house_number: detail.house_number, street_name: detail.street_name })}</TableCell>
-                    <TableCell className={cn(idx !== sortedDetails.length - 1 ? "border-b border-border" : "", "whitespace-nowrap px-3 py-4 text-sm text-gray-500")}>{new Date(detail.issue_date).toLocaleDateString()}</TableCell>
-                    <TableCell className={cn(idx !== sortedDetails.length - 1 ? "border-b border-border" : "", "whitespace-nowrap px-3 py-4 text-sm text-gray-500")}>{formatToTitleCase(detail.violation)}</TableCell>
-                    <TableCell className={cn(idx !== sortedDetails.length - 1 ? "border-b border-border" : "", "whitespace-nowrap px-3 py-4 text-sm text-gray-500")}>{detail.summons_number}</TableCell>
+                    <TableCell className={cn(idx !== displayedDetails.length - 1 ? "border-b border-border" : "", "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-normal text-gray-500 sm:pl-6 lg:pl-8")}>${detail.fine_amount}</TableCell>
+                    <TableCell className={cn(idx !== displayedDetails.length - 1 ? "border-b border-border" : "", "whitespace-nowrap px-3 py-4 text-sm text-gray-500", !detail.street_name && "text-opacity-30")}>{formatLocation({ intersecting_street: detail.intersecting_street, house_number: detail.house_number, street_name: detail.street_name })}</TableCell>
+                    <TableCell className={cn(idx !== displayedDetails.length - 1 ? "border-b border-border" : "", "whitespace-nowrap px-3 py-4 text-sm text-gray-500")}>{new Date(detail.issue_date).toLocaleDateString()}</TableCell>
+                    <TableCell className={cn(idx !== displayedDetails.length - 1 ? "border-b border-border" : "", "whitespace-nowrap px-3 py-4 text-sm text-gray-500")}>{formatToTitleCase(detail.violation)}</TableCell>
+                    <TableCell className={cn(idx !== displayedDetails.length - 1 ? "border-b border-border" : "", "whitespace-nowrap px-3 py-4 text-sm text-gray-500")}>{detail.summons_number}</TableCell>
                   </TableRow>
                 ))}
+                {displayCount < sortedDetails.length && (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center py-4">
+                      <div ref={observerRef} className="h-4" />
+                    </TableCell>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </div>
@@ -140,7 +174,7 @@ export function ViolationDetailsTable({ details }: ViolationDetailsTableProps) {
       </div>
       {/* Mobile Cards */}
       <div className="md:hidden space-y-4">
-        {sortedDetails.map((detail) => (
+        {displayedDetails.map((detail) => (
           <div key={detail.summons_number} className="rounded-lg border border-border bg-card p-4 shadow-sm flex flex-col gap-2">
             <div className="flex justify-between items-center">
               <span className="text-xs font-semibold text-muted-foreground">Fine Amount</span>
@@ -164,6 +198,9 @@ export function ViolationDetailsTable({ details }: ViolationDetailsTableProps) {
             </div>
           </div>
         ))}
+        {displayCount < sortedDetails.length && (
+          <div ref={observerRef} className="h-4" />
+        )}
       </div>
     </div>
   );
