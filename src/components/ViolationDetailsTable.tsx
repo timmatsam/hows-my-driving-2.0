@@ -41,8 +41,8 @@ export function ViolationDetailsTable({ details }: ViolationDetailsTableProps) {
           bValue = new Date(b.issue_date).getTime();
           break;
         case 'amount':
-          aValue = parseFloat(a.fine_amount) || 0;
-          bValue = parseFloat(b.fine_amount) || 0;
+          aValue = a.fine_amount || 0;
+          bValue = b.fine_amount || 0;
           break;
         case 'violation':
           aValue = a.violation.toLowerCase();
